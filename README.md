@@ -1,0 +1,2 @@
+# squasher
+squash league
