@@ -1,4 +1,3 @@
-# .github/workflows/frontend-deploy.yml
 name: Deploy Frontend to GitHub Pages
 
 on:
@@ -8,27 +7,31 @@ on:
       - 'frontend/**'
       - '.github/workflows/frontend-deploy.yml'
 
+permissions:
+  contents: write  # Required to push to gh-pages branch
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     
     steps:
-    - name: Checkout
+    - name: Checkout repository
       uses: actions/checkout@v3
-      
+
     - name: Setup Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: 16
-        
-    - name: Install and Build
+        node-version: 18  # Use a newer Node.js version if possible
+
+    - name: Install dependencies and build
       run: |
         cd frontend
         npm ci
-        REACT_APP_API_URL=${{ secrets.REACT_APP_API_URL }} npm run build
+        npm run build
       
     - name: Deploy to GitHub Pages
       uses: JamesIves/github-pages-deploy-action@4.1.4
       with:
         branch: gh-pages
         folder: frontend/build
+        clean: true  # Ensures old files are removed before deploying
